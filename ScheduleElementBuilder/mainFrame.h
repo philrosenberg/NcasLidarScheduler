@@ -52,7 +52,7 @@ private:
 	std::vector<wxButton*> m_removeButtons;
 	std::vector<wxButton*> m_upButtons;
 	std::vector<wxButton*> m_downButtons;
-	wxPanel *m_background;
+	wxScrolledWindow *m_background;
 	wxFlexGridSizer *m_topSizer;
 	std::string m_saveFile;
 	bool m_saved;

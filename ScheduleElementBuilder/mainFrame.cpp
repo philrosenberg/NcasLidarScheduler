@@ -44,15 +44,16 @@ mainFrame::mainFrame(wxFrame *frame, const wxString& title)
 	mbar->Append(helpMenu, wxT("&Help"));
 
 	SetMenuBar(mbar);
-	m_background = new wxPanel(this);
+	m_background = new wxScrolledWindow(this);
+	m_background->SetScrollRate(5, 5);
 
 	m_addRowControls.push_back(new AddRowControl(m_background, this));
 
 	m_topSizer = new wxFlexGridSizer(1, 4, 3, 3);
 	m_topSizer->Add (m_addRowControls[0], 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	m_background->SetSizerAndFit(m_topSizer);
-	this->Fit();
+	m_background->SetSizer(m_topSizer);
+	this->SetSize(800, 300);
 
 	m_saved = true;
 }
@@ -193,10 +194,8 @@ void mainFrame::addRow(size_t index, ScheduleControl *newControl)
 	m_topSizer->InsertStretchSpacer(index * 8);
 	m_topSizer->Insert(index * 8, m_addRowControls[index], 0, wxLeft | wxALIGN_CENTER_VERTICAL, 5);
 
-	m_background->Fit();
-	this->Fit();
-
 	m_saved = false;
+	m_background->FitInside();
 }
 
 void mainFrame::OnRemoveRow(wxCommandEvent& event)
@@ -242,10 +241,7 @@ void mainFrame::removeRow(size_t index)
 
 	m_saved = false;
 
-	m_background->Layout();
-	Layout();
-	m_background->Fit();
-	Fit();
+	m_background->FitInside();
 }
 
 bool mainFrame::clear()
@@ -328,9 +324,8 @@ void mainFrame::swapControls(size_t index1, size_t index2)
 	m_topSizer->Insert(index1 * 8 + 4, m_scheduleControls[index1], 0, wxLeft | wxALIGN_CENTER_VERTICAL, 5);
 	m_topSizer->Insert(index2 * 8 + 4, m_scheduleControls[index2], 0, wxLeft | wxALIGN_CENTER_VERTICAL, 5);
 
+	//force layout as the total size hasn't changed this doesn't seem to happen automatically
 	m_background->Layout();
-	m_background->Fit();
-	Fit();
 
 	m_saved = false;
 }
