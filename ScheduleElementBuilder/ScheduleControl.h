@@ -10,13 +10,17 @@ class mainFrame;
 class ScheduleControl : public wxPanel
 {
 public:
-	ScheduleControl(wxWindow *parent) : wxPanel(parent) {}
+	ScheduleControl(wxWindow *parent, ScheduleItem *item) : wxPanel(parent), m_item(item) {}
 	virtual const ScheduleItem &GetValueGeneric() = 0;
+	void load(std::istream &stream) { m_item->load(stream); }
+private:
+	ScheduleItem *m_item;
 };
 
 class StareScheduleControl : public ScheduleControl
 {
 public:
+	typedef StareScheduleItem ItemType;
 	StareScheduleControl(wxWindow *parent);
 	StareScheduleControl(wxWindow *parent, const StareScheduleItem &value);
 	const ScheduleItem &GetValueGeneric()override;
@@ -34,6 +38,7 @@ private:
 class RhiScheduleControl : public ScheduleControl
 {
 public:
+	typedef RhiScheduleItem ItemType;
 	RhiScheduleControl(wxWindow *parent);
 	RhiScheduleControl(wxWindow *parent, const RhiScheduleItem &value);
 	const ScheduleItem &GetValueGeneric()override;
@@ -53,6 +58,7 @@ private:
 class VadScheduleControl : public ScheduleControl
 {
 public:
+	typedef VadScheduleItem ItemType;
 	VadScheduleControl(wxWindow *parent);
 	VadScheduleControl(wxWindow *parent, const VadScheduleItem &value);
 	const ScheduleItem &GetValueGeneric()override;
@@ -79,3 +85,5 @@ private:
 
 	DECLARE_EVENT_TABLE();
 };
+
+ScheduleControl *getNewControl(std::string name, wxWindow *background);

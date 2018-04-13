@@ -2,6 +2,14 @@
 #include <ostream>
 #include<iomanip>
 
+#include<tuple>
+
+typedef std::tuple<
+	ScheduleItemTraits<StareScheduleItem>,
+	ScheduleItemTraits<RhiScheduleItem>,
+	ScheduleItemTraits<VadScheduleItem>> scheduleTraits;
+
+
 double mapTo360(double angle)
 {
 	return (angle - floor(angle / 360.0)*360.0);
@@ -50,6 +58,20 @@ void StareScheduleItem::load(std::istream &stream)
 	*this = StareScheduleItem(nRaysPerPoint, elevation, azimuth);
 }
 
+std::string StareScheduleItem::getName() const
+{
+	//this is a horrific line - sorry!
+	//Here is what is happening. We wish to get the type of this class. I thought I could do this
+	//with decltype(*this). However this actually gives a refeference type and because this is a
+	//const method it gives a const reference.
+	//so to remove the refence we must do std::remove_reference<>::type, and to remove the
+	//const we must do std::remove_const<>::type, which leavesus with the actual type
+	//which we use in our traits class to get the name;
+	//This may seem horribly long winded, but it means this line of code can be duplicated in any
+	//class and it will just work;
+	return ScheduleItemTraits<std::remove_const<std::remove_reference<decltype(*this)>::type>::type>::name();
+}
+
 RhiScheduleItem::RhiScheduleItem(size_t raysPerPoint, size_t nElevations, double intitialAzimuth, double initialElevation, double finalElevation)
 	: ScheduleItem(raysPerPoint)
 {
@@ -77,6 +99,20 @@ void RhiScheduleItem::load(std::istream &stream)
 	*this = RhiScheduleItem( 1, nPoints, initialAzimuth, initialElevation, finalElevation);
 }
 
+std::string RhiScheduleItem::getName() const
+{
+	//this is a horrific line - sorry!
+	//Here is what is happening. We wish to get the type of this class. I thought I could do this
+	//with decltype(*this). However this actually gives a refeference type and because this is a
+	//const method it gives a const reference.
+	//so to remove the refence we must do std::remove_reference<>::type, and to remove the
+	//const we must do std::remove_const<>::type, which leavesus with the actual type
+	//which we use in our traits class to get the name;
+	//This may seem horribly long winded, but it means this line of code can be duplicated in any
+	//class and it will just work;
+	return ScheduleItemTraits<std::remove_const<std::remove_reference<decltype(*this)>::type>::type>::name();
+}
+
 
 VadScheduleItem::VadScheduleItem(size_t raysPerPoint, double elevation, size_t nAzimuths, double initialAzimuth)
 	: ScheduleItem(raysPerPoint)
@@ -102,4 +138,18 @@ void VadScheduleItem::load(std::istream &stream)
 	stream >> raysPerPoint >> nPoints >> initialAzimuth >> elevation;
 
 	*this = VadScheduleItem((size_t)1, elevation, nPoints, initialAzimuth);
+}
+
+std::string VadScheduleItem::getName() const
+{
+	//this is a horrific line - sorry!
+	//Here is what is happening. We wish to get the type of this class. I thought I could do this
+	//with decltype(*this). However this actually gives a refeference type and because this is a
+	//const method it gives a const reference.
+	//so to remove the refence we must do std::remove_reference<>::type, and to remove the
+	//const we must do std::remove_const<>::type, which leavesus with the actual type
+	//which we use in our traits class to get the name;
+	//This may seem horribly long winded, but it means this line of code can be duplicated in any
+	//class and it will just work;
+	return ScheduleItemTraits<std::remove_const<std::remove_reference<decltype(*this)>::type>::type>::name();
 }

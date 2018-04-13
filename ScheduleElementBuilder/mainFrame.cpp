@@ -146,20 +146,16 @@ void mainFrame::addRow(AddRowControl *generatingControl, std::string type)
 {
 	//create the new control
 	ScheduleControl *newControl = NULL;
-	if (type == "Stare")
+	try
 	{
-		newControl = new StareScheduleControl(m_background);
+		//This function will throw if type is not recognised
+		newControl = getNewControl(type, m_background);
 	}
-	else if (type == "RHI")
+	catch (...)
 	{
-		newControl = new RhiScheduleControl(m_background);
 	}
-	else if (type == "VAD")
-	{
-		newControl = new VadScheduleControl(m_background);
-	}
-
-	//check we have created a new control
+	//check we have created a new control - do this outside the catch, just in case
+	//the control creation failed some other way.
 	if (!newControl)
 	{
 		wxMessageBox("Failed to create a new line of type " + type + ".", "Error");
@@ -432,34 +428,27 @@ void mainFrame::load(std::string &filename)
 		while (pattern != "END")
 		{
 			ScheduleControl *newControl = NULL;
-			if (pattern == "Stare")
+			try
 			{
-				StareScheduleItem value(1, 0, 0);
-				value.load(sin);
-				newControl = new StareScheduleControl(m_background, value);
-				addRow(m_scheduleControls.size(), newControl);
+				newControl = getNewControl(pattern, m_background);
 			}
-			else if (pattern == "RHI")
+			catch (...)
 			{
-				RhiScheduleItem value(1, 2, 0);
-				value.load(sin);
-				newControl = new RhiScheduleControl(m_background, value);
-				addRow(m_scheduleControls.size(), newControl);
 			}
-			else if (pattern == "VAD")
-			{
-				VadScheduleItem value(1, 0, 2);
-				value.load(sin);
-				newControl = new VadScheduleControl(m_background, value);
-				addRow(m_scheduleControls.size(), newControl);
-			}
-			else
+			if (newControl == NULL)
 			{
 				log << "Found a pattern called " << pattern << " which this software does not support. This line will be ignored.\n";
 				//read and ignore the remainder of the line.
 				std::string temp;
 				std::getline(sin, temp);
 			}
+			else
+			{
+				newControl->load(sin);
+				addRow(m_scheduleControls.size(), newControl);
+			}
+
+			
 			sin >> pattern;
 			if (pattern != "END" && (sin.eof() || sin.bad() || sin.fail()))
 			{

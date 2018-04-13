@@ -1,6 +1,15 @@
 #pragma once
 #include<vector>
 
+
+//List all the used pattern names in a single global const. Although I'm not
+//a huge fan of globals, this ensures the names are listed exactly once and
+//that typos don't creep in that cause problems with selecting the correct
+//contol when reading saved files or using dropdowns
+//const std::vector<std::string> g_patternNames{ "Stare", "RHI", "VAD" };
+//setup some typedefs for the types to match the indices on the pattern names
+
+
 struct Direction
 {
 	double elevation;
@@ -34,7 +43,7 @@ public:
 	double getAzimuth() const { return getDirection(0).azimuth; }
 	void save(std::ostream &stream) const override;
 	void load(std::istream &stream) override;
-	std::string getName() const override { return "Stare"; };
+	std::string getName() const override;
 };
 
 class RhiScheduleItem : public ScheduleItem
@@ -46,7 +55,7 @@ public:
 	double getFinalElevation() const { return getDirection(getNPoints() - 1).elevation; }
 	void save(std::ostream &stream) const override;
 	void load(std::istream &stream) override;
-	std::string getName() const override { return "RHI"; };
+	std::string getName() const override;
 };
 
 class VadScheduleItem : public ScheduleItem
@@ -57,5 +66,34 @@ public:
 	double getInitialAzimuth() const { return getDirection(0).azimuth; }
 	void save(std::ostream &stream) const override;
 	void load(std::istream &stream) override;
-	std::string getName() const override { return "VAD"; };
+	std::string getName() const override;
+};
+
+//
+template <class T>
+class ScheduleItemTraits
+{
+public:
+	typedef T ItemType;
+};
+
+template <>
+class ScheduleItemTraits<StareScheduleItem>
+{
+public:
+	static std::string name(){ return "Stare"; }
+};
+
+template <>
+class ScheduleItemTraits<RhiScheduleItem>
+{
+public:
+	static std::string name() { return "RHI"; }
+};
+
+template <>
+class ScheduleItemTraits<VadScheduleItem>
+{
+public:
+	static std::string name() { return "VAD"; }
 };
