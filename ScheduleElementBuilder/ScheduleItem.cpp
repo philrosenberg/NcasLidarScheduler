@@ -2,13 +2,6 @@
 #include <ostream>
 #include<iomanip>
 
-#include<tuple>
-
-typedef std::tuple<
-	ScheduleItemTraits<StareScheduleItem>,
-	ScheduleItemTraits<RhiScheduleItem>,
-	ScheduleItemTraits<VadScheduleItem>> scheduleTraits;
-
 
 double mapTo360(double angle)
 {
