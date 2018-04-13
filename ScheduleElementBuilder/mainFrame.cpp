@@ -137,7 +137,9 @@ void mainFrame::OnExport(wxCommandEvent& event)
 
 void mainFrame::OnAbout(wxCommandEvent& event)
 {
-	wxMessageBox(wxT("NCAS Lidar Scheduler Version 1.00.0"), wxT("About NCAS Lidar Scheduler..."));
+	wxString message;
+	message << "NCAS Lidar Scheduler Version " << getMajorVersion() << "." << getMinorVersion();
+	wxMessageBox(message, wxT("About NCAS Lidar Scheduler..."));
 }
 
 void mainFrame::addRow(AddRowControl *generatingControl, std::string type)
