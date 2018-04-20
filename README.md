@@ -32,6 +32,11 @@ To build simply open the .sln file with Visual Studio. Select either x64
 or x86 platform from the dropdown at the top then select Build->Build 
 Solution.
 
+# Licensing
+This software is licenced under the GNU General Public Licence version 
+3. If you require this software under a different license then please 
+contact the author.
+
 # To Do
 Validation: I need to add checks that the numbers entered are actually 
 numbers and that they are within range.
